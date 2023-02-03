@@ -1,1 +1,1 @@
-CONNECTIVITY TEST: helm test {{ include "perfana-auth-proxy.fullname" . }}
+SMOKETEST: helm test {{ include "perfana-auth-proxy.fullname" . }}
