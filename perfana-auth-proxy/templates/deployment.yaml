@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "perfana-auth-proxy.fullname" . }}
+  labels:
+    {{- include "perfana-auth-proxy.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "perfana-auth-proxy.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "perfana-auth-proxy.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "perfana-auth-proxy.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 10 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        volumeMounts:
+        - name: nginx-cache
+          mountPath: /var/cache/nginx
+        - name: nginx-run
+          mountPath: /var/run/nginx
+        - name: nginx-conf-d
+          mountPath: /etc/nginx/conf.d
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: tls-auth
+          mountPath: /etc/nginx/tls-auth
+        - name: basic-auth
+          mountPath: /etc/nginx/basic-auth
+      volumes:
+      - name: nginx-cache
+        emptyDir:
+          medium: Memory
+      - name: nginx-run
+        emptyDir:
+          medium: Memory
+      - name: nginx-conf-d
+        emptyDir:
+          medium: Memory
+      - name: nginx-conf
+        configMap:
+          name: {{ include "perfana-auth-proxy.fullname" . }}
+      - name: tls-auth
+        secret:
+          {{- if .Values.tlsAuthSecret.name }}
+          secretName: {{ .Values.tlsAuthSecret.name }}
+          {{- else }}
+          secretName: {{ template "perfana-auth-proxy.fullname" . }}-tls-auth
+          {{- end }}
+      - name: basic-auth
+        secret:
+          {{- if .Values.basicAuthSecret.name }}
+          secretName: {{ .Values.basicAuthSecret.name }}
+          {{- else }}
+          secretName: {{ template "perfana-auth-proxy.fullname" . }}-basic-auth
+          {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

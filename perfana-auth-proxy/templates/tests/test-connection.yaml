@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "perfana-auth-proxy.fullname" . }}-test-connection"
+  labels:
+    {{- include "perfana-auth-proxy.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 8 }}
+  containers:
+  - name: wget
+    securityContext:
+      {{- toYaml .Values.securityContext | nindent 10 }}
+    image: frapsoft/openssl
+    command: 
+    - sh 
+    - -ec
+    args: 
+    - |
+      echo Testing connectivity service {{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}
+      wget -O- -q {{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}
+      echo
+      echo Testing connectivity {{ .Values.perfanaURL }}/api/status
+      wget -O- -q {{ .Values.perfanaURL }}/api/status
+      echo
+      openssl x509 -in /etc/tls-auth/tls.crt -text -noout
+    volumeMounts:
+    - name: tls-auth
+      mountPath: /etc/tls-auth
+  volumes:
+  - name: tls-auth
+    secret:
+      {{- if .Values.tlsAuthSecret.name }}
+      secretName: {{ .Values.tlsAuthSecret.name }}
+      {{- else }}
+      secretName: {{ template "perfana-auth-proxy.fullname" . }}-tls-auth
+      {{- end }}
+  restartPolicy: Never
