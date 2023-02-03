@@ -29,7 +29,7 @@ tlsAuthSecret:
     # -----END CERTIFICATE-----
     certificate:
       
-# Creates CiliumNetworkPolicy with egress opening to world:443
+# Creates CiliumNetworkPolicy for egress opening
 ciliumNetworkPolicy:
   create: true
 
