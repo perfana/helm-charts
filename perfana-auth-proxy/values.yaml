@@ -4,7 +4,7 @@ perfanaURL: https://acme1.perfana.cloud
 
 # If security is paramount, create and apply basic-auth secret manually.
 basicAuthSecret:
-  # Use '{{ template "perfana-auth-proxy.fullname" . }}-basic-auth' by default
+  # If not set and create is true, a name is generated using the fullname template
   name: 
   create: false
   username: basic-auth-username
@@ -12,7 +12,7 @@ basicAuthSecret:
  
 # If security is paramount, create and apply tls-auth secret manually.
 tlsAuthSecret:
-  # Use '{{ template "perfana-auth-proxy.fullname" . }}-tls-auth' by default
+  # If not set and create is true, a name is generated using the fullname template
   name: 
   create: false
   secretData:
@@ -31,7 +31,7 @@ tlsAuthSecret:
       
 # Creates CiliumNetworkPolicy for egress opening
 ciliumNetworkPolicy:
-  create: true
+  create: false
 
 image:
   repository: nginx
@@ -47,7 +47,7 @@ serviceAccount:
   create: true
   annotations: {}
   # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  name:
 
 podAnnotations: {}
 
@@ -72,7 +72,7 @@ service:
 
 ingress:
   enabled: false
-  className: ""
+  className:
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
