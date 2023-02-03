@@ -10,7 +10,7 @@ spec:
   securityContext:
     {{- toYaml .Values.podSecurityContext | nindent 8 }}
   containers:
-  - name: wget
+  - name: smoketest
     securityContext:
       {{- toYaml .Values.securityContext | nindent 10 }}
     image: frapsoft/openssl
