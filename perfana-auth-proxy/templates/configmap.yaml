@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "perfana-auth-proxy.fullname" . }}
+  labels:
+    {{- include "perfana-auth-proxy.labels" . | nindent 4 }}
+data:
+  nginx.conf: |
+    events {
+      worker_connections  4096;
+    }
+    
+    pid /var/run/nginx/nginx.pid;
+
+    http {
+    
+      server {
+        error_log                /dev/stdout info;
+        access_log               /dev/stdout;
+        listen                   8080;
+        resolver                 8.8.8.8;
+        client_body_buffer_size  10M;
+        client_max_body_size     10M;
+    
+        location = / {
+          return 200 'OK';
+        }
+    
+        location ~ ^/api/(.*)$ {
+          proxy_pass                {{ .Values.perfanaURL }}/api/$1$is_args$args;
+          proxy_ssl_certificate_key /etc/nginx/tls-auth/tls.key;
+          proxy_ssl_certificate     /etc/nginx/tls-auth/tls.crt;
+          proxy_ssl_server_name     on;
+          proxy_ssl_protocols       TLSv1.3;
+          proxy_ssl_ciphers         HIGH:!aNULL:!MD5;
+          proxy_ssl_session_reuse   on;
+        }
+    
+        location ~ ^/(mimir|influxdb)/(.*)$ {
+          proxy_pass                {{ .Values.perfanaURL }}/$1/$2$is_args$args;
+          proxy_ssl_certificate_key /etc/nginx/tls-auth/tls.key;
+          proxy_ssl_certificate     /etc/nginx/tls-auth/tls.crt;
+          proxy_ssl_server_name     on;
+          proxy_ssl_protocols       TLSv1.3;
+          proxy_ssl_ciphers         HIGH:!aNULL:!MD5;
+          proxy_ssl_session_reuse   on;
+          auth_basic               "";
+          auth_basic_user_file     /etc/nginx/basic-auth/htpasswd;
+        }
+      }
+    }

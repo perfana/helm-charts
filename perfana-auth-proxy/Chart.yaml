@@ -1,0 +1,9 @@
+apiVersion: v2
+name: perfana-auth-proxy
+description: Perfana Authentication Proxy
+type: application
+version: 0.1.0
+appVersion: 1.23.2-alpine
+maintainers:
+- name: Andrej van der Zee
+  email: andrej@perfana.io

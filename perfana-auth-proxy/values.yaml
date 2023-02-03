@@ -1,0 +1,169 @@
+replicaCount: 1
+
+perfanaURL: https://acme1.perfana.cloud
+
+# Note: For security reasons it is prefered to create the secret manually.
+basicAuthSecret:
+  # Use '{{ template "perfana-auth-proxy.fullname" . }}-basic-auth' by default
+  name: 
+  create: true
+  username: basic-auth-username
+  password: basic-auth-password
+ 
+# Note: For security reasons it is prefered to create the secret manually.
+tlsAuthSecret:
+  # Use '{{ template "perfana-auth-proxy.fullname" . }}-tls-auth' by default
+  name: 
+  create: true
+  secretData:
+    # PEM encoded private key. Warning: sensitive data only known by client.
+    privateKey: |
+      -----BEGIN RSA PRIVATE KEY-----
+      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
+      -----END RSA PRIVATE KEY-----
+    # PEM encoded client certificate signed by Perfana.
+    certificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIEZjCCA06gAwIBAgIUEnchKp6FgloGPdoBNantst0MTdkwDQYJKoZIhvcNAQEL
+      BQAwMzEVMBMGA1UEChMMUGVyZmFuYSBCLlYuMRowGAYDVQQDExFQZXJmYW5hIENs
+      aWVudCBDQTAeFw0yMzAxMjUxMTI3NThaFw0yNDAxMjUxNzI4MjhaMB0xGzAZBgNV
+      BAMTEnBlcmZhbmEtbXRscy1hY21lMTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCC
+      AgoCggIBAKnInwAaqqCBnKz5GFnjKUjy7GyBnHOmwgI6agHB2gOqiCAFlgUIjdm5
+      uOlk/f7YQs3SKCG+3QBfkQKhOlzIyAmwF4Dr1+dtKbvw4Kw97v2qxnrmu/VA+R3b
+      Z0T62Fvqnkm83dY+Ebn7FoOnC20QNSmR+E4OPO0sbNeCDHpXZFINOnuN+O/+tghr
+      DgbloreNhpB5F3Ofh3a4dCO+AeYgJsozZsFKlr2CDWT+28inN9ReStXLv8vNOsY9
+      lPmUfmdswUEJCRDsIfnGqWy5WiOJL9okMk2VNCHjZ9cHZ04GXlwFyEfAj9DvWFpe
+      2Ctr+IxVl+tf0ltXdK0TFicTM+XwbPPYgZkaYuj4P0NNwuIwOC0lV0SSJpgF5iOv
+      9A7IHXb/9ecCruOVAzxuhz58xIpzNv4hldMzBLj0NP48edncQqKYBZ6zA0qczXpM
+      NsREXRv0weh6KdWoUB1XDW0jI10TLD2ufqdV8Oil0IQ4Y2meB4DliiPOx+De3zmL
+      m0iqTsrOsEdrsKTlLYmw3afE8+KQzX8wF0OEUE10Rpz6VMIEIp7p2rdGXdjgwsee
+      rrT9zpAoZ4GebrJRbIntgBAXsRAPA3VHFID78NCT8sY0WvPhKn006XQdJo98Q+dT
+      GVgyqpEAOgo4dZQBmFH/mpQTseOJXzYgNXldlYIjFyYP7YydRxzFAgMBAAGjgYcw
+      gYQwDgYDVR0PAQH/BAQDAgOoMBMGA1UdJQQMMAoGCCsGAQUFBwMCMB0GA1UdDgQW
+      BBQsND+W9K1gLQAVoWQHtMxCw0YaAjAfBgNVHSMEGDAWgBQKMtVV3cV2xvAXfXHk
+      F6GQpa2iczAdBgNVHREEFjAUghJwZXJmYW5hLW10bHMtYWNtZTEwDQYJKoZIhvcN
+      AQELBQADggEBAIvMjprvm0MFmaj0Ss5TBQkixfEP9sEcoLCbsoKHTTeyoOOM2ASr
+      T9gr6zZIkCwyl8o1TOFoaZz8XYe6CoUv7N8sQUMbOErGnYHnpoys1avsz3+fXELI
+      1vzdgDArAo/1hShqSOmpOvC2i1/sqZCUAwgygqMLz4s1jwel9Mtc1YSx3YGTgwF1
+      RCk1Ltcw0fwM1uk8WJ1aqjZRF8hyVt75eyNI0L8UBnYz4iZkuZB5i0gK9ihM99Oy
+      F8ewPf3IxatLPznt2z/YUxxZxe2Y5ZO5zxjPTf8e9xn06dlKBaTaESox9v24HdRN
+      w5CdcI2a2hYPOKeWpNca4pFT5wSxYjG1u8c=
+      -----END CERTIFICATE-----
+      
+# Creates CiliumNetworkPolicy with egress opening to world:443
+ciliumNetworkPolicy:
+  create: true
+
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  fsGroup: 2000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 101
+  runAsGroup: 101
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: perfana-auth-proxy.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: perfana-auth-proxy-tls
+  #    hosts:
+  #      - perfana-auth-proxy.local
+
+resources:
+  requests:
+    memory: 32Mi
+    cpu: 100m
+  limits:
+    memory: 64Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
