@@ -1,18 +1,45 @@
+# Perfana Auth Proxy proxies traffic between client and Perfana Cloud
+# by mutual TLS connections in order to provide optimal security in an easy way.
+
 replicaCount: 1
 
-perfanaURL: https://acme1.perfana.cloud
+# The URL to connect to Perfana Cloud.
+perfanaURL:
 
-# If security is paramount, create and apply basic-auth secret manually.
+# basicAuthSecret is used for authentication from client to Perfana Auth Proxy.
+# If security is paramount, create and apply basicAuthSecret manually like below.
+# Use "htpasswd -Bn <username> | base64 -w0" to generate data.htpasswd.
+#
+# apiVersion: v1
+# kind: Secret
+# type: Opaque
+# metadata:
+#   name: {{ .Values.basicAuthSecret.name }}
+# data:
+#   htpasswd: <htpasswd-result>
 basicAuthSecret:
-  # If not set, name is generated using the fullname template
+  # If not set, name is generated using the fullname template appended with "-basic-auth".
+  # For example "perfana-auth-proxy-basic-auth".
   name: 
   create: false
   username: basic-auth-username
   password: basic-auth-password
  
-# If security is paramount, create and apply tls-auth secret manually.
+# tlsAuthSecret holds private key and client certificate signed by Perfana to guarentee 
+# secure mTLS connection between Perfana Auth Proxy and Perfana Cloud over internet.
+# If security is paramount, create and apply tlsAuthSecret manually like below.
+#
+# apiVersion: v1
+# kind: Secret
+# type: kubernetes.io/tls
+# metadata:
+#   name: {{ .Values.tlsAuthSecret.name }}
+# data:
+#   tls.key: <base64 encoded PEM private key>
+#   tls.crt: <base64 encoded PEM client certificate>
 tlsAuthSecret:
-  # If not set, name is generated using the fullname template
+  # If not set, name is generated using the fullname template appended with "-tls-auth".
+  # For example "perfana-auth-proxy-tls-auth".
   name: 
   create: false
   secretData:
