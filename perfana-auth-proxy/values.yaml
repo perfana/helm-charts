@@ -4,7 +4,7 @@ perfanaURL: https://acme1.perfana.cloud
 
 # If security is paramount, create and apply basic-auth secret manually.
 basicAuthSecret:
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set, name is generated using the fullname template
   name: 
   create: false
   username: basic-auth-username
@@ -12,7 +12,7 @@ basicAuthSecret:
  
 # If security is paramount, create and apply tls-auth secret manually.
 tlsAuthSecret:
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set, name is generated using the fullname template
   name: 
   create: false
   secretData:
