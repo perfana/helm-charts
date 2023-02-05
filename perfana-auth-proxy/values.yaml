@@ -25,7 +25,7 @@ basicAuthSecret:
   username: basic-auth-username
   password: basic-auth-password
  
-# tlsAuthSecret holds private key and client certificate signed by Perfana to guarentee 
+# tlsAuthSecret holds private key and client certificate signed by Perfana to guarantee
 # secure mTLS connection between Perfana Auth Proxy and Perfana Cloud over internet.
 # If security is paramount, create and apply tlsAuthSecret manually like below.
 #
