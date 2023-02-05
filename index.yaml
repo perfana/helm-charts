@@ -14,4 +14,17 @@ entries:
     urls:
     - https://github.com/perfana/helm-charts/releases/download/perfana-auth-proxy-0.1.0/perfana-auth-proxy-0.1.0.tgz
     version: 0.1.0
-generated: "2023-02-05T16:24:17.554687133Z"
+  perfana-fixture:
+  - apiVersion: v1
+    appVersion: perfana-2.3.0
+    created: "2023-02-05T16:36:26.160012553Z"
+    description: Perfana Performance Hub
+    digest: ce359e880b0ae1898032f4934ec4e966e2565f61b950a882019a3d472a050a22
+    maintainers:
+    - email: support@perfana.io
+      name: Perfana Dev Team
+    name: perfana-fixture
+    urls:
+    - https://github.com/perfana/helm-charts/releases/download/perfana-fixture-1.1.0/perfana-fixture-1.1.0.tgz
+    version: 1.1.0
+generated: "2023-02-05T16:36:26.160017753Z"
