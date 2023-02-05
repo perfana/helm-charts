@@ -1,0 +1,102 @@
+{{- if .Values.perfanaCheck.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perfana-check
+  labels:
+    app: perfana-check
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.perfanaCheck.replicaCount }}
+  selector:
+    matchLabels:
+      app: perfana-check
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: perfana-check
+        release: {{ .Release.Name }}
+        {{- with .Values.perfanaCheck.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.perfanaCheck.annotations }}
+      annotations: {{ toYaml .Values.perfanaCheck.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.perfanaCheck.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaCheck.serviceAccount.name }}
+      {{- end}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: perfana-check
+          image: "{{ .Values.perfanaCheck.image.repository }}:{{ .Values.perfanaCheck.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaCheck.image.pullPolicy }}
+          {{- with .Values.perfanaCheck.command }}
+          command:
+          {{ toYaml . | nindent 10 }}
+          {{- end}}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: {{ .Values.perfanaCheck.service.targetPort }}
+              containerPort: {{ .Values.perfanaCheck.service.port }}
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          env: # ENV variables for your project
+          {{- if .Values.mongoUrl.secretName }}
+            - name: SPRING_DATA_MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  key: MONGO_URL
+                  name: {{ .Values.mongoUrl.secretName }}
+          {{- end }}
+          {{- range $key, $value := .Values.perfanaCheck.env }}
+            - name: {{ $key }}
+              value: '{{ $value }}'
+          {{- end }}
+          resources:
+{{ toYaml .Values.perfanaCheck.resources | indent 12 }}
+          volumeMounts:
+            - name: perfana-check-secrets
+              mountPath: /secrets/mongodb.properties
+              subPath: perfana-check-mongodb.properties
+      volumes:
+      {{- if .Values.existingSecret }}
+        - name: perfana-check-secrets
+          projected:
+            sources:
+              - secret:
+                  name: {{ .Values.existingSecret }}
+      {{- end }}
+    {{- with .Values.perfanaCheck.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaCheck.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaCheck.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

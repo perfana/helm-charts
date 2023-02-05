@@ -1,6 +1,4 @@
-# helm-charts
-
-# perfana-auth-proxy
+# Perfana helm charts
 
 ## Usage
 
@@ -10,8 +8,21 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 Once Helm is set up properly, add the repo as follows:
 
 ```console
-helm repo add perfana-auth-proxy https://perfana.github.io/helm-charts
+helm repo add perfana https://perfana.github.io/helm-charts
 ```
 
-You can then run `helm search repo perfana-auth-proxy` to see the charts.
+You can then run `helm search repo perfana` to see the charts.
 
+# Available charts 
+
+## perfana
+
+Setup a Perfana environment.
+
+## perfana-auth-proxy
+
+Setup a client side Perfana auth proxy to connect to Perfana Cloud.
+
+## perfana-fixture
+
+Create a Perfana initial setup with a data fixture.
