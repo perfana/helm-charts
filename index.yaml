@@ -16,6 +16,24 @@ entries:
   perfana-auth-proxy:
   - apiVersion: v2
     appVersion: 1.23.2-alpine
+    created: "2023-02-06T09:24:54.976779776Z"
+    description: Perfana Authentication Proxy (PAP)
+    digest: 557a37a3877942dfc540d6ec7fc7982e7e56ec3ff9a1f66b10f0f1254db670d4
+    keywords:
+    - Nginx
+    - mTLS
+    - authentication
+    - proxy
+    maintainers:
+    - email: andrej@perfana.io
+      name: Andrej van der Zee
+    name: perfana-auth-proxy
+    type: application
+    urls:
+    - https://github.com/perfana/helm-charts/releases/download/perfana-auth-proxy-0.1.1/perfana-auth-proxy-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: 1.23.2-alpine
     created: "2023-02-05T16:24:17.554679133Z"
     description: Perfana Authentication Proxy
     digest: 438673de35a5b8ddbfcd5b1e3929ae57cdfc9c2d5ab6b2aa8f531c664c98c383
@@ -40,4 +58,4 @@ entries:
     urls:
     - https://github.com/perfana/helm-charts/releases/download/perfana-fixture-1.1.0/perfana-fixture-1.1.0.tgz
     version: 1.1.0
-generated: "2023-02-05T16:46:07.025296948Z"
+generated: "2023-02-06T09:24:54.976786876Z"
