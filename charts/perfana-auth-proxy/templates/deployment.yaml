@@ -57,8 +57,10 @@ spec:
           subPath: nginx.conf
         - name: tls-auth
           mountPath: /etc/nginx/tls-auth
+        {{- if .Values.basicAuth.enabled }}
         - name: basic-auth
           mountPath: /etc/nginx/basic-auth
+        {{- end }}
       volumes:
       - name: nginx-cache
         emptyDir:
@@ -79,6 +81,7 @@ spec:
           {{- else }}
           secretName: {{ template "perfana-auth-proxy.fullname" . }}-tls-auth
           {{- end }}
+      {{- if .Values.basicAuth.enabled }}
       - name: basic-auth
         secret:
           {{- if .Values.basicAuthSecret.name }}
@@ -86,6 +89,7 @@ spec:
           {{- else }}
           secretName: {{ template "perfana-auth-proxy.fullname" . }}-basic-auth
           {{- end }}
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

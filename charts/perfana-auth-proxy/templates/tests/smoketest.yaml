@@ -42,21 +42,35 @@ spec:
       fi
       echo OK
 
-      {{- if .Values.basicAuthSecret.create }}
-        export BASIC_AUTH_USERNAME={{ .Values.basicAuthSecret.username }}
-        export BASIC_AUTH_PASSWORD={{ .Values.basicAuthSecret.password }}
-        echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
-        wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
-        echo
+      {{ if and .Values.basicAuth.enabled .Values.basicAuthSecret.create }}
+      export BASIC_AUTH_USERNAME={{ .Values.basicAuthSecret.username }}
+      export BASIC_AUTH_PASSWORD={{ .Values.basicAuthSecret.password }}
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
+      wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
+      echo
 
-        echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
-        wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
-        echo
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
+      wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
+      echo
 
-        echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
-        wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
-        echo
-      {{ end }}
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
+      wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
+      echo
+
+      {{- else if not .Values.basicAuth.enabled }}
+
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
+      wget -O- -q http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
+      echo
+
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
+      wget -O- -q http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
+      echo
+
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
+      wget -O- -q http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/influxdb/ping
+      echo
+      {{- end }}
 
     volumeMounts:
     - name: smoketest
