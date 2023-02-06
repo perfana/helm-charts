@@ -1,8 +1,13 @@
 apiVersion: v2
 name: perfana-auth-proxy
-description: Perfana Authentication Proxy
+description: Perfana Authentication Proxy (PAP)
 type: application
-version: 0.1.0
+keywords:
+- Nginx
+- mTLS
+- authentication
+- proxy
+version: 0.1.1
 appVersion: 1.23.2-alpine
 maintainers:
 - name: Andrej van der Zee
