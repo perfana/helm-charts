@@ -107,6 +107,7 @@ spec:
           resources:
 {{ toYaml .Values.perfanaFe.resources | indent 12 }}
           volumeMounts:
+          {{- if .Values.existingSecret }}
           - name: perfana-fe-secrets
             mountPath: /secrets/perfana-fe-grafana-config-secret.yaml
             subPath: perfana-fe-grafana-config-secret.yaml
@@ -131,6 +132,7 @@ spec:
           - name: perfana-fe-secrets
             mountPath: /secrets/perfana-mongo-urls-secret.env
             subPath: perfana-mongo-urls-secret.env
+          {{- end }}
           - name: perfana-fe-meteor-settings
             mountPath: /config/perfana-fe-meteor-settings.yaml
             subPath: perfana-fe-meteor-settings.yaml   
