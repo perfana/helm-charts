@@ -23,7 +23,7 @@ spec:
       wget -O- -q http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}
       echo
 
-      echo Testing connectivity {{ .Values.perfanaURL }}/status
+      echo Testing connectivity {{ .Values.perfanaURL }}/api/status
       wget -O- -q {{ .Values.perfanaURL }}/status
       echo
 
@@ -49,7 +49,7 @@ spec:
       wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/api/status
       echo
 
-      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
+      echo Checking connectivity to http://{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo > /dev/null
       wget -O- -q http://$BASIC_AUTH_USERNAME:$BASIC_AUTH_PASSWORD@{{ include "perfana-auth-proxy.fullname" . }}:{{ .Values.service.port }}/mimir/api/v1/status/buildinfo
       echo
 
