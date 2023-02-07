@@ -15,7 +15,7 @@ perfanaURL:
 
 # basicAuth is optional and used for authentication from client components to PAP.
 basicAuth:
-  enables: true
+  enabled: true
 
 # basicAuthSecret is used for authentication from client to PAP.
 # If security is paramount, create and apply basicAuthSecret manually like below.
