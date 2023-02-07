@@ -56,15 +56,15 @@ tlsAuthSecret:
   secretData:
     # PEM encoded private key. Warning: sensitive data only known by client.
     # privateKey: |
-    #  -----BEGIN RSA PRIVATE KEY-----
-    #  <snip>
-    #  -----END RSA PRIVATE KEY-----
+    #   -----BEGIN RSA PRIVATE KEY-----
+    #   <snip>
+    #   -----END RSA PRIVATE KEY-----
     privateKey:
     # PEM encoded client certificate signed by Perfana.
     # certificate: |
-    # -----BEGIN CERTIFICATE-----
-    # <snip>
-    # -----END CERTIFICATE-----
+    #   -----BEGIN CERTIFICATE-----
+    #   <snip>
+    #   -----END CERTIFICATE-----
     certificate:
       
 # Creates CiliumNetworkPolicy for egress openings
