@@ -65,6 +65,8 @@ perfanaFe:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  volumes: []
+  volumeMounts: []
   serviceAccount:
     enabled: false
     name: perfana-fe
@@ -158,6 +160,8 @@ perfanaGrafana:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  volumes: []
+  volumeMounts: []
   ## Sync interval
   env:
     SYNC_INTERVAL: 30000  # 30 seconds
@@ -200,6 +204,8 @@ perfanaCheck:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  volumes: []
+  volumeMounts: []
   ## Environment variables
   env: 
     SPRING_PROFILES_ACTIVE: "prd"
@@ -230,6 +236,8 @@ perfanaSnapshot:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  volumes: []
+  volumeMounts: []
   serviceAccount:
     enabled: false
     name: perfana-snapshot

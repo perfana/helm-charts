@@ -107,6 +107,9 @@ spec:
           resources:
 {{ toYaml .Values.perfanaFe.resources | indent 12 }}
           volumeMounts:
+          {{- if .Values.perfanaFe.volumeMounts }}
+             {{- toYaml .Values.perfanaFe.volumeMounts | nindent 10 }}
+          {{- end }}
           {{- if .Values.existingSecret }}
           - name: perfana-fe-secrets
             mountPath: /secrets/perfana-fe-grafana-config-secret.yaml
@@ -137,6 +140,9 @@ spec:
             mountPath: /config/perfana-fe-meteor-settings.yaml
             subPath: perfana-fe-meteor-settings.yaml   
       volumes:
+      {{- if .Values.perfanaFe.volumes }}
+         {{- toYaml .Values.perfanaFe.volumes | nindent 6 }}
+      {{- end }}
       - name: perfana-fe-meteor-settings
         projected:
           sources:
