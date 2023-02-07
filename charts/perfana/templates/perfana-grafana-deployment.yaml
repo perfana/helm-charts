@@ -75,6 +75,7 @@ spec:
           resources:
 {{ toYaml .Values.perfanaGrafana.resources | indent 12 }}
           volumeMounts:
+          {{- if .Values.existingSecret }}
           - name: perfana-grafana-secrets
             mountPath: /secrets/perfana-mongo-urls-secret.env
             subPath: perfana-mongo-urls-secret.env
@@ -84,6 +85,7 @@ spec:
           - name: perfana-grafana-secrets
             mountPath: /secrets/perfana-grafana-postgres-secret.env
             subPath: perfana-grafana-postgres-secret.env
+          {{- end }}
       volumes:
       {{- if .Values.existingSecret }}
       - name: perfana-grafana-secrets
