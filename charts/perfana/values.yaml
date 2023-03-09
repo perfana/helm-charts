@@ -11,6 +11,8 @@ meteorSettings:
   secretName:
   value:
 
+existingSecret: perfana-secrets
+
 # If existingSecret exists, the chart will mount files from a secret. See readme.md for the required keys
 # existingSecret: perfana-secrets
 
@@ -241,3 +243,37 @@ perfanaSnapshot:
   serviceAccount:
     enabled: false
     name: perfana-snapshot
+
+perfanaScheduler:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-scheduler
+    tag: perfana-2.4.3
+    pullPolicy: Always
+  labels: {}
+  annotations: {}
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 1
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 500m
+    #  memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  ## Environment variables
+  env: 
+    SPRING_PROFILES_ACTIVE: "prd"
+    JAVA_TOOL_OPTIONS: -Dlogging.level.root=INFO
+    SPRING_CONFIG_IMPORT: optional:file:/secrets/mongodb.properties
+  serviceAccount:
+    enabled: false
+    name: perfana-scheduler
