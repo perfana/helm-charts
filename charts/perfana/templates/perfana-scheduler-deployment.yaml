@@ -78,7 +78,7 @@ spec:
           {{- if .Values.existingSecret }}
           - name: perfana-scheduler-secrets
             mountPath: /secrets/mongodb.properties
-            subPath: perfana-scheduler-mongodb.properties
+            subPath: perfana-check-mongodb.properties
           {{- end }}
       volumes:
       {{- if .Values.perfanaScheduler.volumes }}
