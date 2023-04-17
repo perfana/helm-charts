@@ -72,10 +72,6 @@ spec:
           {{- range .Values.perfanaSnapshot.envFromSecrets }}
           {{print "- " (. | toYaml | nindent 12 | trim) }}
           {{- end }}
-          {{- range $key, $value := .Values.perfanaSnapshot.env }}
-          - name: {{ $key }}
-            value: '{{ $value }}'
-          {{- end }}
           resources:
 {{ toYaml .Values.perfanaSnapshot.resources | indent 12 }}
           volumeMounts:
