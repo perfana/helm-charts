@@ -27,7 +27,7 @@ data:
         }
     
         location ~ ^/api/(.*)$ {
-          proxy_pass                {{ .Values.perfanaURL }}/api/$1$is_args$args;
+          proxy_pass                {{ trimSuffix "/" ".Values.perfanaURL" }}/api/$1$is_args$args;
           proxy_ssl_certificate_key /etc/nginx/tls-auth/tls.key;
           proxy_ssl_certificate     /etc/nginx/tls-auth/tls.crt;
           proxy_ssl_server_name     on;
@@ -37,7 +37,7 @@ data:
         }
     
         location ~ ^/(mimir|influxdb)/(.*)$ {
-          proxy_pass                {{ .Values.perfanaURL }}/$1/$2$is_args$args;
+          proxy_pass                {{ trimSuffix "/" ".Values.perfanaURL" }}/$1/$2$is_args$args;
           proxy_ssl_certificate_key /etc/nginx/tls-auth/tls.key;
           proxy_ssl_certificate     /etc/nginx/tls-auth/tls.crt;
           proxy_ssl_server_name     on;
