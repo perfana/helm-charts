@@ -19,9 +19,9 @@ You can then run `helm search repo perfana` to see the charts.
 
 Setup a Perfana environment.
 
-## perfana-auth-proxy
+## perfana-secure-gateway
 
-Setup a client side Perfana auth proxy to connect to Perfana Cloud.
+Setup a client side Perfana gateway to connect to Perfana Cloud via mTLS.
 
 ## perfana-fixture
 
