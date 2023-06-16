@@ -1,6 +1,6 @@
 apiVersion: v2
-name: perfana-auth-proxy
-description: Perfana Authentication Proxy (PAP)
+name: perfana-secure-gateway
+description: Perfana Secure Gateway (PSG)
 type: application
 keywords:
 - Nginx

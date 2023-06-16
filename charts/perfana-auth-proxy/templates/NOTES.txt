@@ -1,1 +1,0 @@
-SMOKETEST: helm test {{ include "perfana-auth-proxy.fullname" . }}

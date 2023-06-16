@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "perfana-auth-proxy.fullname" . }}
+  name: {{ include "perfana-secure-gateway.fullname" . }}
   labels:
-    {{- include "perfana-auth-proxy.labels" . | nindent 4 }}
+    {{- include "perfana-secure-gateway.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "perfana-auth-proxy.selectorLabels" . | nindent 6 }}
+      {{- include "perfana-secure-gateway.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -16,13 +16,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "perfana-auth-proxy.selectorLabels" . | nindent 8 }}
+        {{- include "perfana-secure-gateway.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "perfana-auth-proxy.serviceAccountName" . }}
+      serviceAccountName: {{ include "perfana-secure-gateway.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -73,13 +73,13 @@ spec:
           medium: Memory
       - name: nginx-conf
         configMap:
-          name: {{ include "perfana-auth-proxy.fullname" . }}
+          name: {{ include "perfana-secure-gateway.fullname" . }}
       - name: tls-auth
         secret:
           {{- if .Values.tlsAuthSecret.name }}
           secretName: {{ .Values.tlsAuthSecret.name }}
           {{- else }}
-          secretName: {{ template "perfana-auth-proxy.fullname" . }}-tls-auth
+          secretName: {{ template "perfana-secure-gateway.fullname" . }}-tls-auth
           {{- end }}
       {{- if .Values.basicAuth.enabled }}
       - name: basic-auth
@@ -87,7 +87,7 @@ spec:
           {{- if .Values.basicAuthSecret.name }}
           secretName: {{ .Values.basicAuthSecret.name }}
           {{- else }}
-          secretName: {{ template "perfana-auth-proxy.fullname" . }}-basic-auth
+          secretName: {{ template "perfana-secure-gateway.fullname" . }}-basic-auth
           {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}

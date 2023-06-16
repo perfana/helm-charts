@@ -1,0 +1,30 @@
+{{- if .Values.ciliumNetworkPolicy.create -}}
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: {{ include "perfana-secure-gateway.fullname" . }}
+spec:
+  endpointSelector:
+    matchLabels:
+      k8s:app.kubernetes.io/instance: {{ include "perfana-secure-gateway.fullname" . }}
+      k8s:app.kubernetes.io/name: {{ include "perfana-secure-gateway.fullname" . }}
+  ingress:
+  - fromEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: {{ include "perfana-secure-gateway.fullname" . }}
+        k8s:app.kubernetes.io/name: {{ include "perfana-secure-gateway.fullname" . }}
+  egress:
+  - toEntities:
+    - world
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+    - ports:
+      - port: "53"
+        protocol: ANY
+  - toEndpoints:
+    - matchLabels:
+        k8s:app.kubernetes.io/instance: {{ include "perfana-secure-gateway.fullname" . }}
+        k8s:app.kubernetes.io/name: {{ include "perfana-secure-gateway.fullname" . }}
+{{- end }}

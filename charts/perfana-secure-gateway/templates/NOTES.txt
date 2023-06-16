@@ -1,0 +1,1 @@
+SMOKETEST: helm test {{ include "perfana-secure-gateway.fullname" . }}
