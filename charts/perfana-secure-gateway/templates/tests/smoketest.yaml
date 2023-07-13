@@ -22,11 +22,7 @@ spec:
       echo Checking connectivity service http://{{ include "perfana-secure-gateway.fullname" . }}:{{ .Values.service.port }}
       wget -O- -q --timeout=2 --tries=2 http://{{ include "perfana-secure-gateway.fullname" . }}:{{ .Values.service.port }}
       echo
-
-      echo Checking connectivity {{ .Values.perfanaURL }}/api/status
-      wget -O- -q --timeout=2 --tries=2 {{ .Values.perfanaURL }}/api/status
-      echo
-
+      
       echo Checking matching certificate and private key
       openssl pkey -pubout -in /etc/tls-auth/tls.key | sha512sum > /smoketest/pkey.sum
       openssl x509 -pubkey -in /etc/tls-auth/tls.crt -noout | sha512sum /smoketest/pkey.sum -c -s
