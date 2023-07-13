@@ -29,7 +29,7 @@ spec:
       echo OK
 
       echo Checking issuer certificate
-      export EXPECTED_ISSUER="issuer= O = Perfana B.V., CN = Perfana Client CA"
+      export EXPECTED_ISSUER="issuer=O = Perfana B.V., CN = Perfana Client CA"
       export ISSUER=$(openssl x509 -in /etc/tls-auth/tls.crt -issuer -noout -nameopt oneline)
       if [ "$ISSUER" != "$EXPECTED_ISSUER" ] ; then
         echo "Expected: $EXPECTED_ISSUER"
