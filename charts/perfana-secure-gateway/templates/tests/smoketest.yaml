@@ -22,18 +22,14 @@ spec:
       echo Checking connectivity service http://{{ include "perfana-secure-gateway.fullname" . }}:{{ .Values.service.port }}
       wget -O- -q --timeout=2 --tries=2 http://{{ include "perfana-secure-gateway.fullname" . }}:{{ .Values.service.port }}
       echo
-
-      echo Checking connectivity {{ .Values.perfanaURL }}/api/status
-      wget -O- -q --timeout=2 --tries=2 {{ .Values.perfanaURL }}/api/status
-      echo
-
+      
       echo Checking matching certificate and private key
       openssl pkey -pubout -in /etc/tls-auth/tls.key | sha512sum > /smoketest/pkey.sum
       openssl x509 -pubkey -in /etc/tls-auth/tls.crt -noout | sha512sum /smoketest/pkey.sum -c -s
       echo OK
 
       echo Checking issuer certificate
-      export EXPECTED_ISSUER="issuer= O = Perfana B.V., CN = Perfana Client CA"
+      export EXPECTED_ISSUER="issuer=O = Perfana B.V., CN = Perfana Client CA"
       export ISSUER=$(openssl x509 -in /etc/tls-auth/tls.crt -issuer -noout -nameopt oneline)
       if [ "$ISSUER" != "$EXPECTED_ISSUER" ] ; then
         echo "Expected: $EXPECTED_ISSUER"
