@@ -53,14 +53,24 @@ spec:
             - name: {{ .Values.perfanaCheck.service.targetPort }}
               containerPort: {{ .Values.perfanaCheck.service.port }}
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+            - name: health
+              containerPort: {{ .Values.perfanaCheck.health.port }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              # needs health endpoint (not liveness) to check for mongo connectivity hick-ups
+              path: /actuator/health
+              port: health
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: health
           env: # ENV variables for your project
           {{- if .Values.mongoUrl.secretName }}
             - name: SPRING_DATA_MONGODB_URI
