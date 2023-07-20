@@ -54,7 +54,7 @@ spec:
               containerPort: {{ .Values.perfanaCheck.service.port }}
               protocol: TCP
             - name: health
-              containerPort: {{ .Values.perfanaCheck.health.port }}
+              containerPort: 9192
               protocol: TCP
           livenessProbe:
             failureThreshold: 3
