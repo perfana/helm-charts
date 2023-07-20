@@ -3,6 +3,18 @@ entries:
   perfana:
   - apiVersion: v1
     appVersion: perfana-2.5.2
+    created: "2023-07-20T14:49:24.510627539Z"
+    description: Perfana Performance Hub
+    digest: 841a5bca5600f5310f2c051e28d821413eb6cf5d8ab24b2c9f14ea85b7e81553
+    maintainers:
+    - email: support@perfana.io
+      name: Perfana Dev Team
+    name: perfana
+    urls:
+    - https://github.com/perfana/helm-charts/releases/download/perfana-2.5.4/perfana-2.5.4.tgz
+    version: 2.5.4
+  - apiVersion: v1
+    appVersion: perfana-2.5.2
     created: "2023-07-18T19:21:59.514543815Z"
     description: Perfana Performance Hub
     digest: 090db24e4b11ce407a1835966e7cd6edc14ec57b36d0d35bb6cc8bd0835eeed2
@@ -365,4 +377,4 @@ entries:
     urls:
     - https://github.com/perfana/helm-charts/releases/download/perfana-secure-gateway-0.1.9/perfana-secure-gateway-0.1.9.tgz
     version: 0.1.9
-generated: "2023-07-18T19:21:59.514884716Z"
+generated: "2023-07-20T14:49:24.510677539Z"
