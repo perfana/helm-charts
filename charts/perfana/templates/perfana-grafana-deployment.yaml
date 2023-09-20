@@ -44,7 +44,11 @@ spec:
           {{- with .Values.perfanaGrafana.command }}
           command:
           {{ toYaml . | nindent 10 }}
-          {{- end}}
+          {{- end }}
+          {{- with .Values.perfanaGrafana.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
           {{- with .Values.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}

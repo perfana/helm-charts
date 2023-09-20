@@ -30,6 +30,8 @@ perfanaFe:
     tag: perfana-2.5.2
     pullPolicy: Always
   deploymentStrategy: RollingUpdate
+  command: []
+  args: []
   service:
     type: ClusterIP
     port: 3000
@@ -150,6 +152,8 @@ perfanaGrafana:
     repository: perfana/perfana-grafana
     tag: perfana-2.5.2
     pullPolicy: Always
+  command: []
+  args: []
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
@@ -192,6 +196,8 @@ perfanaCheck:
     repository: perfana/perfana-check
     tag: perfana-2.5.2
     pullPolicy: Always
+  command: []
+  args: []
   labels: {}
   annotations: {}
   service:
@@ -229,6 +235,8 @@ perfanaCheck:
 perfanaSnapshot:
   enabled: true
   replicaCount: 1
+  command: []
+  args: []
   image:
     repository: perfana/perfana-snapshot
     tag: perfana-2.5.2
@@ -264,6 +272,8 @@ perfanaScheduler:
     repository: perfana/perfana-scheduler
     tag: perfana-2.5.2
     pullPolicy: Always
+  command: []
+  args: []
   labels: {}
   annotations: {}
   resources: {}
