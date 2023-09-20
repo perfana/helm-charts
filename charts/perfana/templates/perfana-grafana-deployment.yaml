@@ -57,7 +57,14 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
-          env: # ENV variables for your project
+          env:
+          {{- range $key, $value := .Values.perfanaGrafana.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
           {{- if .Values.mongoUrl.secretName }}
           - name: MONGO_URL
             valueFrom:

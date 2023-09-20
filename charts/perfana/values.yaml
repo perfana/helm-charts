@@ -59,7 +59,10 @@ perfanaFe:
     # requests:
     #  cpu: 1
     #  memory: 512Mi
-  ## Environment variables
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
   env:
     ROOT_URL: http://localhost:4000
     PORT: 3000
@@ -164,6 +167,10 @@ perfanaGrafana:
   volumes: []
   volumeMounts: []
   ## Sync interval
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
   env:
     SYNC_INTERVAL: 30000  # 30 seconds
   #   MYSQL_HOST: mysql-headless
@@ -207,7 +214,10 @@ perfanaCheck:
   affinity: {}
   volumes: []
   volumeMounts: []
-  ## Environment variables
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
   env: 
     SPRING_PROFILES_ACTIVE: "prd"
     JAVA_TOOL_OPTIONS: -Dlogging.level.root=INFO
@@ -242,6 +252,10 @@ perfanaSnapshot:
   serviceAccount:
     enabled: false
     name: perfana-snapshot
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
 
 perfanaScheduler:
   enabled: true
@@ -268,7 +282,10 @@ perfanaScheduler:
   affinity: {}
   volumes: []
   volumeMounts: []
-  ## Environment variables
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
   env: 
     SPRING_PROFILES_ACTIVE: "prd"
     JAVA_TOOL_OPTIONS: -Dlogging.level.root=INFO

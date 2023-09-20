@@ -78,7 +78,14 @@ spec:
            periodSeconds: 10
            successThreshold: 1
            timeoutSeconds: 5
-          env: # ENV variables for your project    
+          env:
+          {{- range $key, $value := .Values.perfanaFe.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
           {{- if .Values.mongoUrl.secretName }}
             - name: MONGO_URL
               valueFrom:

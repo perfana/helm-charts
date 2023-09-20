@@ -71,7 +71,14 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: health
-          env: # ENV variables for your project
+          env:
+          {{- range $key, $value := .Values.perfanaCheck.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
           {{- if .Values.mongoUrl.secretName }}
             - name: SPRING_DATA_MONGODB_URI
               valueFrom:
