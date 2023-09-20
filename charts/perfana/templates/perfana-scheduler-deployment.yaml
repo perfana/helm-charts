@@ -44,7 +44,11 @@ spec:
           {{- with .Values.perfanaScheduler.command }}
           command:
           {{ toYaml . | nindent 10 }}
-          {{- end}}
+          {{- end }}
+          {{- with .Values.perfanaScheduler.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
           {{- with .Values.containerSecurityContext }}
           securityContext:
           {{- toYaml . | nindent 12 }}

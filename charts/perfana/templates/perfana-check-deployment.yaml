@@ -44,6 +44,10 @@ spec:
           {{- with .Values.perfanaCheck.command }}
           command:
           {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.perfanaCheck.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
           {{- end}}
           {{- with .Values.containerSecurityContext }}
           securityContext:
