@@ -63,11 +63,11 @@ spec:
           #     port: http
           env:
           {{- range $key, $value := .Values.perfanaSnapshot.extraEnvSecrets }}
-            - name: {{ $key }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $value.name }}
-                  key: {{ $value.key }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ $value.name }}
+                key: {{ $value.key }}
           {{- end }}
           {{- if .Values.mongoUrl.secretName }}
           - name: MONGO_URL
