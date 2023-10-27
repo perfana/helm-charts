@@ -7,8 +7,8 @@ keywords:
 - mTLS
 - authentication
 - proxy
-version: 0.1.12
-appVersion: 1.23.3-alpine
+version: 0.1.13
+appVersion: 1.25.3-alpine
 maintainers:
 - name: Andrej van der Zee
   email: andrej@perfana.io
