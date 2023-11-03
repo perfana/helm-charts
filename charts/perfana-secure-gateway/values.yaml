@@ -10,8 +10,8 @@ image:
 
 replicaCount: 1
 
-# The URL to connect to Perfana Cloud.
-perfanaURL:
+# The Perfana domain belonging to client, e.g. companyx.perfana.cloud.
+perfanaClientDomain:
 
 # basicAuth is optional and used for authentication from client components to PAP.
 basicAuth:
