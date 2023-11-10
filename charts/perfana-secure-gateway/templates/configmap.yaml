@@ -57,7 +57,6 @@ data:
 
         ssl_certificate_key  /etc/nginx/tls-auth/tls.key;
         ssl_certificate      /etc/nginx/tls-auth/tls.crt;
-        server_name          host.local;
         ssl_protocols        TLSv1.3;
         ssl_ciphers          HIGH:!aNULL:!MD5;
 
