@@ -15,7 +15,7 @@ perfanaClientDomain:
 
 # basicAuth is optional and used for authentication from client components to PAP.
 basicAuth:
-  enabled: true
+  enabled: false
 
 # basicAuthSecret is used for authentication from client to PAP.
 # If security is paramount, create and apply basicAuthSecret manually like below.
