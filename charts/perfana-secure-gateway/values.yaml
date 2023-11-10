@@ -101,6 +101,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
+  grpcPort: 4317
 
 ingress:
   enabled: false

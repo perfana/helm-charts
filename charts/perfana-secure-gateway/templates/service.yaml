@@ -11,5 +11,9 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+    - port: {{ if .Values.service.grpcPort }}{{ .Values.service.grpcPort }}{{ else }}4317{{ end }}
+      targetPort: grpc
+      protocol: TCP
+      name: grpc
   selector:
     {{- include "perfana-secure-gateway.selectorLabels" . | nindent 4 }}
