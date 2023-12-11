@@ -36,7 +36,7 @@ data:
           proxy_ssl_session_reuse   on;
         }
     
-        location ~ ^/(mimir|influxdb|tempo)/(.*)$ {
+        location ~ ^/(mimir|influxdb|tempo|pyroscope)/(.*)$ {
           proxy_pass                https://{{ .Values.perfanaClientDomain }}/$1/$2$is_args$args;
           proxy_ssl_certificate_key /etc/nginx/tls-auth/tls.key;
           proxy_ssl_certificate     /etc/nginx/tls-auth/tls.crt;
