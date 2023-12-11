@@ -343,6 +343,24 @@ entries:
   perfana-secure-gateway:
   - apiVersion: v2
     appVersion: 1.25.3-alpine
+    created: "2023-12-11T19:45:05.428775423Z"
+    description: Perfana Secure Gateway (PSG)
+    digest: 0f39a2f42c716b8b23e8e0379a903919a8dfe9ba993da3281571da7e0a752957
+    keywords:
+    - Nginx
+    - mTLS
+    - authentication
+    - proxy
+    maintainers:
+    - email: andrej@perfana.io
+      name: Andrej van der Zee
+    name: perfana-secure-gateway
+    type: application
+    urls:
+    - https://github.com/perfana/helm-charts/releases/download/perfana-secure-gateway-0.1.21/perfana-secure-gateway-0.1.21.tgz
+    version: 0.1.21
+  - apiVersion: v2
+    appVersion: 1.25.3-alpine
     created: "2023-11-10T16:10:57.183399319Z"
     description: Perfana Secure Gateway (PSG)
     digest: b5f6a3bde00f2b8e7a93ae7f47896e74646dc9ee47a8e2541513634ea446039f
@@ -503,4 +521,4 @@ entries:
     urls:
     - https://github.com/perfana/helm-charts/releases/download/perfana-secure-gateway-0.1.9/perfana-secure-gateway-0.1.9.tgz
     version: 0.1.9
-generated: "2023-11-10T16:10:57.183525654Z"
+generated: "2023-12-11T19:45:05.428853088Z"
