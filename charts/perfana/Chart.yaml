@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: perfana-3.1.0
 description: Perfana Performance Hub
 name: perfana
-version: 3.1.0
+version: 3.1.1
 maintainers:
   - name: Perfana Dev Team
     email: support@perfana.io

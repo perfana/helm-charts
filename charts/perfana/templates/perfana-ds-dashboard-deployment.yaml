@@ -65,7 +65,7 @@ spec:
           livenessProbe:
             failureThreshold: 8
             httpGet:
-              path: /health
+              path: /metrics
               port: {{ .Values.perfanaDsDashboard.service.port }}
               scheme: HTTP
             initialDelaySeconds: 30
@@ -75,7 +75,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /health
+              path: /metrics
               port: {{ .Values.perfanaDsDashboard.service.port }}
               scheme: HTTP
             initialDelaySeconds: 10

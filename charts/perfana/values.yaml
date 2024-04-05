@@ -397,7 +397,7 @@ perfanaDsDashboard:
   annotations: {}
   service:
     type: ClusterIP
-    port: 8080
+    port: 5555
     targetPort: http
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
