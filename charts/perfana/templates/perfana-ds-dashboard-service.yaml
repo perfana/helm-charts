@@ -1,0 +1,21 @@
+{{- if .Values.perfanaDsDashboard.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: perfana-ds-dashboard
+  labels:
+    app: perfana-ds-dashboard
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.perfanaDsDashboard.service.type }}
+  ports:
+    - port: {{ .Values.perfanaDsDashboard.service.port }}
+      targetPort: {{ .Values.perfanaDsDashboard.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: perfana-ds-dashboard
+    release: {{ .Release.Name }}
+{{- end }}
