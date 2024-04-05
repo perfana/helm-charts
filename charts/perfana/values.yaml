@@ -27,7 +27,7 @@ perfanaFe:
   replicaCount: 1
   image:
     repository: perfana/perfana-fe
-    tag: perfana-2.5.2
+    tag: perfana-3.1.0
     pullPolicy: Always
   deploymentStrategy: RollingUpdate
   command: []
@@ -150,7 +150,7 @@ perfanaGrafana:
   replicaCount: 1
   image:
     repository: perfana/perfana-grafana
-    tag: perfana-2.5.2
+    tag: perfana-3.1.0
     pullPolicy: Always
   command: []
   args: []
@@ -194,7 +194,7 @@ perfanaCheck:
   replicaCount: 1
   image:
     repository: perfana/perfana-check
-    tag: perfana-2.5.2
+    tag: perfana-3.1.0
     pullPolicy: Always
   command: []
   args: []
@@ -239,7 +239,7 @@ perfanaSnapshot:
   args: []
   image:
     repository: perfana/perfana-snapshot
-    tag: perfana-2.5.2
+    tag: perfana-3.1.0
     pullPolicy: Always
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -270,7 +270,7 @@ perfanaScheduler:
   replicaCount: 1
   image:
     repository: perfana/perfana-scheduler
-    tag: perfana-2.5.2
+    tag: perfana-3.1.0
     pullPolicy: Always
   command: []
   args: []
@@ -303,3 +303,123 @@ perfanaScheduler:
   serviceAccount:
     enabled: false
     name: perfana-scheduler
+
+perfanaDsApi:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-ds-api
+    tag: perfana-3.1.0
+    pullPolicy: Always
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: http
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 1
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 500m
+  #  memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
+  env: {}
+  serviceAccount:
+    enabled: false
+    name: perfana-ds-api
+
+perfanaDsWorker:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-ds-worker
+    tag: perfana-3.1.0
+    pullPolicy: Always
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: http
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 1
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 500m
+  #  memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
+  env: {}
+  serviceAccount:
+    enabled: false
+    name: perfana-ds-worker
+
+perfanaDsDashboard:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-ds-dashboard
+    tag: perfana-3.1.0
+    pullPolicy: Always
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: http
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #  cpu: 1
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 500m
+  #  memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets: {}
+  # ENV_VAR_NAME:
+  #   name: secret-name
+  #   key: secret-key
+  env: {}
+  serviceAccount:
+    enabled: false
+    name: perfana-ds-dashboard
