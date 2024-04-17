@@ -115,6 +115,10 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.perfanaGrafana.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     {{- with .Values.perfanaGrafana.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}

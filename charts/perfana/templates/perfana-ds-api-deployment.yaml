@@ -108,6 +108,10 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
+    {{- with .Values.perfanaDsApi.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
     {{- with .Values.perfanaDsApi.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}

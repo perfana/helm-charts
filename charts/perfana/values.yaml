@@ -70,6 +70,7 @@ perfanaFe:
     PORT: 3000
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -167,6 +168,7 @@ perfanaGrafana:
     #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -217,6 +219,7 @@ perfanaCheck:
     #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -254,6 +257,7 @@ perfanaSnapshot:
     #  memory: 1Gi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -289,6 +293,7 @@ perfanaScheduler:
     #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -332,6 +337,7 @@ perfanaDsApi:
   #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -372,6 +378,7 @@ perfanaDsWorker:
   #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
@@ -412,6 +419,7 @@ perfanaDsDashboard:
   #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
+  topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
