@@ -13,7 +13,7 @@ data:
     pid /var/run/nginx/nginx.pid;
 
     http {
-     
+
       server {
         error_log                /dev/stdout info;
         access_log               /dev/stdout;
