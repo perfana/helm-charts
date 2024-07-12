@@ -313,7 +313,7 @@ perfanaDsApi:
   enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-ds-api
+    repository: perfana/perfana-ds
     tag: perfana-3.1.0
     pullPolicy: Always
   command: []
@@ -354,7 +354,7 @@ perfanaDsWorker:
   enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-ds-worker
+    repository: perfana/perfana-ds
     tag: perfana-3.1.0
     pullPolicy: Always
   command: []
@@ -391,11 +391,11 @@ perfanaDsWorker:
     enabled: false
     name: perfana-ds-worker
 
-perfanaDsDashboard:
+perfanaDsMetricWorker:
   enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-ds-dashboard
+    repository: perfana/perfana-ds
     tag: perfana-3.1.0
     pullPolicy: Always
   command: []
@@ -404,7 +404,7 @@ perfanaDsDashboard:
   annotations: {}
   service:
     type: ClusterIP
-    port: 5555
+    port: 8080
     targetPort: http
   resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
@@ -430,4 +430,5 @@ perfanaDsDashboard:
   env: {}
   serviceAccount:
     enabled: false
-    name: perfana-ds-dashboard
+    name: perfana-ds-metric-worker
+

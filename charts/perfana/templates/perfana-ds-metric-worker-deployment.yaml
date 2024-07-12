@@ -1,0 +1,103 @@
+{{- if .Values.perfanaDsMetricWorker.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perfana-ds-metric-worker
+  labels:
+    app: perfana-ds-metric-worker
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.perfanaDsMetricWorker.replicaCount }}
+  selector:
+    matchLabels:
+      app: perfana-ds-metric-worker
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.perfanaDsMetricWorker.deploymentStrategy }}
+  {{- if ne .Values.perfanaDsMetricWorker.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: perfana-ds-metric-worker
+        release: {{ .Release.Name }}
+        {{- with .Values.perfanaDsMetricWorker.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.perfanaDsMetricWorker.annotations }}
+      annotations: {{ toYaml .Values.perfanaDsMetricWorker.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.perfanaDsMetricWorker.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaDsMetricWorker.serviceAccount.name }}
+      {{- end}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: perfana-ds-metric-worker
+          image: "{{ .Values.perfanaDsMetricWorker.image.repository }}:{{ .Values.perfanaDsMetricWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaDsMetricWorker.image.pullPolicy }}
+          {{- with .Values.perfanaDsMetricWorker.command }}
+          command:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.perfanaDsMetricWorker.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: {{ .Values.perfanaDsMetricWorker.service.targetPort }}
+              containerPort: {{ .Values.perfanaDsMetricWorker.service.port }}
+              protocol: TCP
+          env:
+          {{- range $key, $value := .Values.perfanaDsMetricWorker.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
+        {{- range $key, $value := .Values.perfanaDsMetricWorker.env }}
+            - name: {{ $key }}
+              value: '{{ $value }}'
+        {{- end }}
+          resources:
+{{ toYaml .Values.perfanaDsMetricWorker.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.perfanaDsMetricWorker.volumeMounts }}
+             {{- toYaml .Values.perfanaDsMetricWorker.volumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+      {{- if .Values.perfanaDsMetricWorker.volumes }}
+         {{- toYaml .Values.perfanaDsMetricWorker.volumes | nindent 6 }}
+      {{- end }}
+    {{- with .Values.perfanaDsMetricWorker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaDsMetricWorker.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaDsMetricWorker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaDsMetricWorker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}
