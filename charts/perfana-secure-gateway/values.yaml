@@ -1,7 +1,7 @@
 # Perfana Secure Gateway (PSG) proxies traffic between client and Perfana Cloud
 # by mutual TLS connections in order to provide optimal security in an easy way.
 
-# PAP uses official nginx image.
+# PSG uses official nginx image.
 image:
   repository: nginx
   pullPolicy: IfNotPresent
@@ -13,11 +13,11 @@ replicaCount: 1
 # The Perfana domain belonging to client, e.g. companyx.perfana.cloud.
 perfanaClientDomain:
 
-# basicAuth is optional and used for authentication from client components to PAP.
+# basicAuth is optional and used for authentication from client components to PSG.
 basicAuth:
   enabled: false
 
-# basicAuthSecret is used for authentication from client to PAP.
+# basicAuthSecret is used for authentication from client to PSG.
 # If security is paramount, create and apply basicAuthSecret manually like below.
 # Use "htpasswd -Bn <username> | base64 -w0" to generate data.htpasswd.
 #
@@ -37,7 +37,7 @@ basicAuthSecret:
   password: basic-auth-password
  
 # tlsAuthSecret holds private key and client certificate signed by Perfana to guarantee
-# secure mTLS connection between PAP and Perfana Cloud over internet.
+# secure mTLS connection between PSG and Perfana Cloud over internet.
 # If security is paramount, create and apply tlsAuthSecret manually like below.
 #
 # apiVersion: v1
