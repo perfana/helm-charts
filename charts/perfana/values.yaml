@@ -432,3 +432,75 @@ perfanaDsMetricWorker:
     enabled: false
     name: perfana-ds-metric-worker
 
+perfanaChat:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-chat
+    tag: latest
+    pullPolicy: Always
+  deploymentStrategy: RollingUpdate
+  command: []
+  args: []
+  service:
+    type: ClusterIP
+    port: 3000
+    targetPort: http
+  ingress:
+    enabled: false
+  resources: {}
+  extraEnvSecrets:
+    OPENAI_API_KEY:
+      name: openai-api-key
+      key: OPENAI_API_KEY
+    MONGODB_URI:  
+      name: mongodb-uri
+      key: MONGODB_URI
+  env:
+    NEXT_PUBLIC_MCP_SERVER_URL: http://perfana-mcp:8888/mcp
+    OPENAI_MODEL: gpt-4o-mini
+    NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: /api/copilotkit
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: {}
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  serviceAccount:
+    enabled: false
+    name: perfana-chat
+  
+
+perfanaMcp:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-mcp
+    tag: latest
+    pullPolicy: Always
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  service:
+    type: ClusterIP
+    port: 8888
+    targetPort: http
+  resources: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: {}
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets:
+    MCP_MONGODB_URI:  
+      name: mongodb-uri
+      key: MONGODB_URI
+  env:
+    MCP_MONGODB_READONLY: "true"
+    MCP_PORT: "8888"
+  serviceAccount:
+    enabled: false
+    name: perfana-mcp
+

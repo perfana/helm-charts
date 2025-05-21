@@ -1,0 +1,113 @@
+{{- if .Values.perfanaMcp.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perfana-mcp
+  labels:
+    app: perfana-mcp
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.perfanaMcp.replicaCount }}
+  selector:
+    matchLabels:
+      app: perfana-mcp
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: perfana-mcp
+        release: {{ .Release.Name }}
+        {{- with .Values.perfanaMcp.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.perfanaMcp.annotations }}
+      annotations: {{ toYaml .Values.perfanaMcp.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.perfanaMcp.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaMcp.serviceAccount.name }}
+      {{- end}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: perfana-mcp
+          image: "{{ .Values.perfanaMcp.image.repository }}:{{ .Values.perfanaMcp.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaMcp.image.pullPolicy }}
+          {{- with .Values.perfanaMcp.command }}
+          command:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.perfanaMcp.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end}}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: {{ .Values.perfanaMcp.service.targetPort }}
+              containerPort: {{ .Values.perfanaMcp.service.port }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: {{ .Values.perfanaMcp.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.perfanaMcp.service.port }}
+              scheme: HTTP
+          env:
+          {{- range $key, $value := .Values.perfanaMcp.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
+          {{- range $key, $value := .Values.perfanaMcp.env }}
+            - name: {{ $key }}
+              value: '{{ $value }}'
+          {{- end }}
+          resources:
+{{ toYaml .Values.perfanaMcp.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.perfanaMcp.volumeMounts }}
+             {{- toYaml .Values.perfanaMcp.volumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+      {{- if .Values.perfanaMcp.volumes }}
+         {{- toYaml .Values.perfanaMcp.volumes | nindent 6 }}
+      {{- end }}
+    {{- with .Values.perfanaMcp.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaMcp.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaMcp.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaMcp.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }} 
