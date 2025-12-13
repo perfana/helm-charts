@@ -1,38 +1,38 @@
-{{- if .Values.perfanaDsApi.enabled -}}
+{{- if .Values.perfanaWeb.enabled -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: perfana-ds-api
+  name: perfana-web
   labels:
-    app: perfana-ds-api
+    app: perfana-web
     chart: {{ include "perfana.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.perfanaDsApi.replicaCount }}
+  replicas: {{ .Values.perfanaWeb.replicaCount }}
   selector:
     matchLabels:
-      app: perfana-ds-api
+      app: perfana-web
       release: {{ .Release.Name }}
   strategy:
-    type: {{ .Values.perfanaDsApi.deploymentStrategy }}
-  {{- if ne .Values.perfanaDsApi.deploymentStrategy "RollingUpdate" }}
+    type: {{ .Values.perfanaWeb.deploymentStrategy }}
+  {{- if ne .Values.perfanaWeb.deploymentStrategy "RollingUpdate" }}
     rollingUpdate: null
   {{- end }}
   template:
     metadata:
       labels:
-        app: perfana-ds-api
+        app: perfana-web
         release: {{ .Release.Name }}
-        {{- with .Values.perfanaDsApi.labels }}
+        {{- with .Values.perfanaWeb.labels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-      {{- if .Values.perfanaDsApi.annotations }}
-      annotations: {{ toYaml .Values.perfanaDsApi.annotations | nindent 8 }}
+      {{- if .Values.perfanaWeb.annotations }}
+      annotations: {{ toYaml .Values.perfanaWeb.annotations | nindent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.perfanaDsApi.serviceAccount.enabled }}
-      serviceAccountName: {{ .Values.perfanaDsApi.serviceAccount.name }}
+      {{- if .Values.perfanaWeb.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaWeb.serviceAccount.name }}
       {{- end}}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -43,14 +43,14 @@ spec:
       {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: perfana-ds-api
-          image: "{{ .Values.perfanaDsApi.image.repository }}:{{ .Values.perfanaDsApi.image.tag }}"
-          imagePullPolicy: {{ .Values.perfanaDsApi.image.pullPolicy }}
-          {{- with .Values.perfanaDsApi.command }}
+        - name: perfana-web
+          image: "{{ .Values.perfanaWeb.image.repository }}:{{ .Values.perfanaWeb.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaWeb.image.pullPolicy }}
+          {{- with .Values.perfanaWeb.command }}
           command:
           {{ toYaml . | nindent 10 }}
           {{- end }}
-          {{- with .Values.perfanaDsApi.args }}
+          {{- with .Values.perfanaWeb.args }}
           args:
           {{ toYaml . | nindent 10 }}
           {{- end }}
@@ -59,14 +59,14 @@ spec:
           {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
-            - name: {{ .Values.perfanaDsApi.service.targetPort }}
-              containerPort: {{ .Values.perfanaDsApi.service.port }}
+            - name: {{ .Values.perfanaWeb.service.targetPort }}
+              containerPort: {{ .Values.perfanaWeb.service.port }}
               protocol: TCP
           livenessProbe:
             failureThreshold: 8
             httpGet:
-              path: /health
-              port: {{ .Values.perfanaDsApi.service.port }}
+              path: /api/health
+              port: {{ .Values.perfanaWeb.service.port }}
               scheme: HTTP
             initialDelaySeconds: 30
             periodSeconds: 10
@@ -75,48 +75,48 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /health
-              port: {{ .Values.perfanaDsApi.service.port }}
+              path: /api/health
+              port: {{ .Values.perfanaWeb.service.port }}
               scheme: HTTP
             initialDelaySeconds: 10
             periodSeconds: 10
             successThreshold: 1
             timeoutSeconds: 5
           env:
-          {{- range $key, $value := .Values.perfanaDsApi.extraEnvSecrets }}
+          {{- range $key, $value := .Values.perfanaWeb.extraEnvSecrets }}
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
                   name: {{ $value.name }}
                   key: {{ $value.key }}
           {{- end }}
-        {{- range $key, $value := .Values.perfanaDsApi.env }}
+          {{- range $key, $value := .Values.perfanaWeb.env }}
             - name: {{ $key }}
               value: '{{ $value }}'
-        {{- end }}
+          {{- end }}
           resources:
-{{ toYaml .Values.perfanaDsApi.resources | indent 12 }}
+{{ toYaml .Values.perfanaWeb.resources | indent 12 }}
           volumeMounts:
-          {{- if .Values.perfanaDsApi.volumeMounts }}
-             {{- toYaml .Values.perfanaDsApi.volumeMounts | nindent 10 }}
+          {{- if .Values.perfanaWeb.volumeMounts }}
+             {{- toYaml .Values.perfanaWeb.volumeMounts | nindent 10 }}
           {{- end }}
       volumes:
-      {{- if .Values.perfanaDsApi.volumes }}
-         {{- toYaml .Values.perfanaDsApi.volumes | nindent 6 }}
+      {{- if .Values.perfanaWeb.volumes }}
+         {{- toYaml .Values.perfanaWeb.volumes | nindent 6 }}
       {{- end }}
-    {{- with .Values.perfanaDsApi.nodeSelector }}
+    {{- with .Values.perfanaWeb.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.perfanaDsApi.topologySpreadConstraints }}
+    {{- with .Values.perfanaWeb.topologySpreadConstraints }}
       topologySpreadConstraints:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.perfanaDsApi.affinity }}
+    {{- with .Values.perfanaWeb.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.perfanaDsApi.tolerations }}
+    {{- with .Values.perfanaWeb.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}

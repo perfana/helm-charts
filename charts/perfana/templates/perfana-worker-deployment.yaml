@@ -1,0 +1,99 @@
+{{- if .Values.perfanaWorker.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perfana-worker
+  labels:
+    app: perfana-worker
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.perfanaWorker.replicaCount }}
+  selector:
+    matchLabels:
+      app: perfana-worker
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.perfanaWorker.deploymentStrategy }}
+  {{- if ne .Values.perfanaWorker.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: perfana-worker
+        release: {{ .Release.Name }}
+        {{- with .Values.perfanaWorker.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.perfanaWorker.annotations }}
+      annotations: {{ toYaml .Values.perfanaWorker.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.perfanaWorker.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaWorker.serviceAccount.name }}
+      {{- end}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: perfana-worker
+          image: "{{ .Values.perfanaWorker.image.repository }}:{{ .Values.perfanaWorker.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaWorker.image.pullPolicy }}
+          {{- with .Values.perfanaWorker.command }}
+          command:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.perfanaWorker.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          env:
+          {{- range $key, $value := .Values.perfanaWorker.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
+          {{- range $key, $value := .Values.perfanaWorker.env }}
+            - name: {{ $key }}
+              value: '{{ $value }}'
+          {{- end }}
+          resources:
+{{ toYaml .Values.perfanaWorker.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.perfanaWorker.volumeMounts }}
+             {{- toYaml .Values.perfanaWorker.volumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+      {{- if .Values.perfanaWorker.volumes }}
+         {{- toYaml .Values.perfanaWorker.volumes | nindent 6 }}
+      {{- end }}
+    {{- with .Values.perfanaWorker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaWorker.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaWorker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaWorker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

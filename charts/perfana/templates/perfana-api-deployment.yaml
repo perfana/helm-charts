@@ -1,0 +1,123 @@
+{{- if .Values.perfanaApi.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: perfana-api
+  labels:
+    app: perfana-api
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.perfanaApi.replicaCount }}
+  selector:
+    matchLabels:
+      app: perfana-api
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.perfanaApi.deploymentStrategy }}
+  {{- if ne .Values.perfanaApi.deploymentStrategy "RollingUpdate" }}
+    rollingUpdate: null
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        app: perfana-api
+        release: {{ .Release.Name }}
+        {{- with .Values.perfanaApi.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.perfanaApi.annotations }}
+      annotations: {{ toYaml .Values.perfanaApi.annotations | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.perfanaApi.serviceAccount.enabled }}
+      serviceAccountName: {{ .Values.perfanaApi.serviceAccount.name }}
+      {{- end}}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.securityContext }}
+      securityContext:
+      {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: perfana-api
+          image: "{{ .Values.perfanaApi.image.repository }}:{{ .Values.perfanaApi.image.tag }}"
+          imagePullPolicy: {{ .Values.perfanaApi.image.pullPolicy }}
+          {{- with .Values.perfanaApi.command }}
+          command:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.perfanaApi.args }}
+          args:
+          {{ toYaml . | nindent 10 }}
+          {{- end }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+          {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: {{ .Values.perfanaApi.service.targetPort }}
+              containerPort: {{ .Values.perfanaApi.service.port }}
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 8
+            httpGet:
+              path: /api/health
+              port: {{ .Values.perfanaApi.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /api/health
+              port: {{ .Values.perfanaApi.service.port }}
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 5
+          env:
+          {{- range $key, $value := .Values.perfanaApi.extraEnvSecrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $value.name }}
+                  key: {{ $value.key }}
+          {{- end }}
+          {{- range $key, $value := .Values.perfanaApi.env }}
+            - name: {{ $key }}
+              value: '{{ $value }}'
+          {{- end }}
+          resources:
+{{ toYaml .Values.perfanaApi.resources | indent 12 }}
+          volumeMounts:
+          {{- if .Values.perfanaApi.volumeMounts }}
+             {{- toYaml .Values.perfanaApi.volumeMounts | nindent 10 }}
+          {{- end }}
+      volumes:
+      {{- if .Values.perfanaApi.volumes }}
+         {{- toYaml .Values.perfanaApi.volumes | nindent 6 }}
+      {{- end }}
+    {{- with .Values.perfanaApi.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaApi.topologySpreadConstraints }}
+      topologySpreadConstraints:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaApi.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.perfanaApi.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}
