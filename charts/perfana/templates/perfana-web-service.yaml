@@ -1,0 +1,25 @@
+{{- if .Values.perfanaWeb.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.perfanaWeb.service.annotations }}
+  annotations:
+{{ toYaml .Values.perfanaWeb.service.annotations | indent 4 }}
+{{- end }}
+  name: perfana-web
+  labels:
+    app: perfana-web
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.perfanaWeb.service.type }}
+  ports:
+    - port: {{ .Values.perfanaWeb.service.port }}
+      targetPort:  {{ .Values.perfanaWeb.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: perfana-web
+    release: {{ .Release.Name }}
+{{- end }}

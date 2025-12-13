@@ -1,26 +1,26 @@
-{{- if .Values.perfanaFe.enabled -}}
-{{- if .Values.perfanaFe.ingress.enabled -}}
-{{- $ingressPath := .Values.perfanaFe.ingress.path -}}
+{{- if .Values.perfanaWeb.enabled -}}
+{{- if .Values.perfanaWeb.ingress.enabled -}}
+{{- $ingressPath := .Values.perfanaWeb.ingress.path -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: perfana-fe
+  name: perfana-web
   labels:
-    app: perfana-fe
+    app: perfana-web
     chart: {{ include "perfana.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.perfanaFe.ingress.annotations }}
+{{- with .Values.perfanaWeb.ingress.annotations }}
   annotations:
 {{ toYaml . | nindent 4 }}
 {{- end }}
 spec:
-  {{- if .Values.perfanaFe.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.perfanaFe.ingress.ingressClassName }}
+  {{- if .Values.perfanaWeb.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.perfanaWeb.ingress.ingressClassName }}
   {{- end }}
-{{- if .Values.perfanaFe.ingress.tls }}
+{{- if .Values.perfanaWeb.ingress.tls }}
   tls:
-  {{- range .Values.perfanaFe.ingress.tls }}
+  {{- range .Values.perfanaWeb.ingress.tls }}
     - hosts:
       {{- range .hosts }}
         - {{ . | quote }}
@@ -29,7 +29,7 @@ spec:
   {{- end }}
 {{- end }}
   rules:
-    {{- range .Values.perfanaFe.ingress.hosts }}
+    {{- range .Values.perfanaWeb.ingress.hosts }}
     - host: {{ .host | quote }}
       http:
         paths:
@@ -38,7 +38,7 @@ spec:
             pathType: {{ .pathType }}
             backend:
               service:
-                name: perfana-fe
+                name: perfana-web
                 port:
                   name: http
           {{- end }}

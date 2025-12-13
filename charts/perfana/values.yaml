@@ -1,19 +1,31 @@
-# perfana component values.
+# Perfana component values.
 
+# Database configuration (PostgreSQL)
+database:
+  host: ""
+  port: 5432
+  name: perfana
+  username: ""
+  password:
+    secretName: ""
+    key: DB_PASSWORD
 
-mongoUrl:
-  secretName:
-  value:
-mongoOplogUrl:
-  secretName:
-  value:
-meteorSettings:
-  secretName:
-  value:
+# Redis configuration (for BullMQ)
+redis:
+  host: ""
+  port: 6379
+  password:
+    secretName: ""
+    key: REDIS_PASSWORD
 
-
-# If existingSecret exists, the chart will mount files from a secret. See readme.md for the required keys
-# existingSecret: perfana-secrets
+# Keycloak configuration
+keycloak:
+  url: ""
+  realm: perfana
+  clientId: perfana
+  clientSecret:
+    secretName: ""
+    key: KEYCLOAK_CLIENT_SECRET
 
 # optional image pull secret
 # imagePullSecrets:
@@ -22,22 +34,28 @@ meteorSettings:
 securityContext: {}
 containerSecurityContext: {}
 
-perfanaFe:
+# =============================================================================
+# perfana-web: Next.js frontend application
+# =============================================================================
+perfanaWeb:
   enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-fe
-    tag: perfana-3.1.0
+    repository: perfana/perfana-web
+    tag: perfana-4.0.0
     pullPolicy: Always
   deploymentStrategy: RollingUpdate
   command: []
   args: []
+  labels: {}
+  annotations: {}
   service:
     type: ClusterIP
-    port: 3000
+    port: 4001
     targetPort: http
   ingress:
     enabled: false
+    # ingressClassName: nginx
     # annotations:
     #   kubernetes.io/ingress.class: nginx
     #   cert-manager.io/cluster-issuer: "<issuer>"
@@ -50,11 +68,7 @@ perfanaFe:
     #   - hosts:
     #       - <hostname>
     #     secretName: perfana-<hostname>-tls
-  resources:
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  resources: {}
     # limits:
     #  cpu: 2
     #  memory: 2Gi
@@ -66,8 +80,10 @@ perfanaFe:
   #   name: secret-name
   #   key: secret-key
   env:
-    ROOT_URL: http://localhost:4000
-    PORT: 3000
+    NEXT_PUBLIC_API_URL: "http://perfana-api:3001/api"
+    NEXT_PUBLIC_KEYCLOAK_URL: ""
+    NEXT_PUBLIC_KEYCLOAK_REALM: "perfana"
+    NEXT_PUBLIC_KEYCLOAK_CLIENT_ID: "perfana"
   nodeSelector: {}
   tolerations: []
   topologySpreadConstraints: {}
@@ -76,431 +92,163 @@ perfanaFe:
   volumeMounts: []
   serviceAccount:
     enabled: false
-    name: perfana-fe
-  configuration:
-    # https://docs.perfana.io/docs/settings/settings.html#organisations
-    # organisations:
-    # - name: Perfana
-    #   description: Perfana
-    
-    # https://docs.perfana.io/docs/settings/settings.html#perfana-url
-    perfanaUrl: "https://perfana.myhost.com"
+    name: perfana-web
 
-    # https://docs.perfana.io/docs/settings/settings.html#perfana-check-url  
-    perfanaCheckUrl: "http://perfana-check:9191"   
-    
-    # https://docs.perfana.io/docs/settings/settings.html#auto-compare-testruns
-    autoCompareTestRuns: true
-    
-    # https://docs.perfana.io/docs/settings/settings.html#auto-set-baseline-testrun
-    autoSetBaselineTestRun: false
- 
-    # https://docs.perfana.io/docs/settings/settings.html#helmet-framesrc
-    helmet:
-      frameSrc:
-      - "https://*.myhost.com"
-
-    # https://docs.perfana.io/docs/settings/settings.html#login-expiration-in-days
-    loginExpirationInDays: 1
-
-    # https://docs.perfana.io/docs/settings/settings.html#retention-settings
-    prometheusRetention: 2592000
-    influxDbRetention: 2592000
-    elasticSearchRetention: 2592000
-    snapshotExpires: 7776000
-
-
-    public:
-    # https://docs.perfana.io/docs/settings/settings.html#forbid-client-account-creation
-      forbidClientAccountCreation: false  
-    
-    # https://docs.perfana.io/docs/settings/settings.html#perfana-url-1
-      perfanaUrl: "https://perfana.myhost.com"   
-    
-    # https://docs.perfana.io/docs/settings/settings.html#jaeger-url  
-      # jaegerUrl: "https://jaeger.myhost.com"
-    
-    # https://docs.perfana.io/docs/settings/settings.html#jaeger-limit
-      # jaegerLimit: 500
-    
-    # https://docs.perfana.io/docs/settings/settings.html#pyroscope-url  
-      # pyroscopeUrl: "https://pyroscope.myhost.com"
-    
-    # https://docs.perfana.io/docs/settings/settings.html#override-login-button-text  
-      # overrideLoginButtonText: "My company Login"
-    
-    # https://docs.perfana.io/docs/settings/settings.html#google-sign-in  
-      # googleSignIn: true
-
-    # https://docs.perfana.io/docs/settings/settings.html#custom-alert-tags
-    # customAlertTags:
-    # - key: application
-    #   value: perfana-applications
-    # - key: namespace
-    #   value: perfana-test-environment     
-
-    # https://docs.perfana.io/docs/settings/settings.html#omit-alert-tags
-    # omitAlertTags:
-    # - alertSource: alertmanager
-    #   tag: kubernetes_pod_name
-    # - alertSource: alertmanager
-    #   tag: node  
-
-perfanaGrafana:
+# =============================================================================
+# perfana-api: NestJS REST API backend
+# =============================================================================
+perfanaApi:
   enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-grafana
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-    #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  ## Sync interval
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env:
-    SYNC_INTERVAL: 30000  # 30 seconds
-  #   MYSQL_HOST: mysql-headless
-  #   MYSQL_USER: grafana
-  # envFromSecrets:
-  # - name: MYSQL_PASSWORD
-  #   valueFrom:
-  #     secretKeyRef:
-  #       key: mysql-password
-  #       name: mysql-credentials
-  serviceAccount:
-    enabled: false
-    name: perfana-grafana
-  
-perfanaCheck:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-check
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  labels: {}
-  annotations: {}
-  service:
-    type: ClusterIP
-    port: 9191
-    targetPort: http
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-    #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env: 
-    SPRING_PROFILES_ACTIVE: "prd"
-    JAVA_TOOL_OPTIONS: -Dlogging.level.root=INFO
-    SPRING_CONFIG_IMPORT: optional:file:/secrets/mongodb.properties
-  serviceAccount:
-    enabled: false
-    name: perfana-check
-
-perfanaSnapshot:
-  enabled: true
-  replicaCount: 1
-  command: []
-  args: []
-  image:
-    repository: perfana/perfana-snapshot
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 2
-    #  memory: 2Gi
-    # requests:
-    #  cpu: 1
-    #  memory: 1Gi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  serviceAccount:
-    enabled: false
-    name: perfana-snapshot
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-
-perfanaScheduler:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-scheduler
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  labels: {}
-  annotations: {}
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-    #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env: 
-    SPRING_PROFILES_ACTIVE: "prd"
-    JAVA_TOOL_OPTIONS: -Dlogging.level.root=INFO
-    SPRING_CONFIG_IMPORT: optional:file:/secrets/mongodb.properties
-  serviceAccount:
-    enabled: false
-    name: perfana-scheduler
-
-perfanaDsApi:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-ds
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  labels: {}
-  annotations: {}
-  service:
-    type: ClusterIP
-    port: 8080
-    targetPort: http
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-  #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env: {}
-  serviceAccount:
-    enabled: false
-    name: perfana-ds-api
-
-perfanaDsWorker:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-ds
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  labels: {}
-  annotations: {}
-  service:
-    type: ClusterIP
-    port: 8080
-    targetPort: http
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-  #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env: {}
-  serviceAccount:
-    enabled: false
-    name: perfana-ds-worker
-
-perfanaDsMetricWorker:
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-ds
-    tag: perfana-3.1.0
-    pullPolicy: Always
-  command: []
-  args: []
-  labels: {}
-  annotations: {}
-  service:
-    type: ClusterIP
-    port: 8080
-    targetPort: http
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 1
-    #  memory: 1Gi
-    # requests:
-    #  cpu: 500m
-  #  memory: 512Mi
-  nodeSelector: {}
-  tolerations: []
-  topologySpreadConstraints: {}
-  affinity: {}
-  volumes: []
-  volumeMounts: []
-  extraEnvSecrets: {}
-  # ENV_VAR_NAME:
-  #   name: secret-name
-  #   key: secret-key
-  env: {}
-  serviceAccount:
-    enabled: false
-    name: perfana-ds-metric-worker
-
-perfanaChat:
-  enabled: false
-  replicaCount: 1
-  image:
-    repository: perfana/perfana-chat
-    tag: latest
+    repository: perfana/perfana-api
+    tag: perfana-4.0.0
     pullPolicy: Always
   deploymentStrategy: RollingUpdate
   command: []
   args: []
+  labels: {}
+  annotations: {}
   service:
     type: ClusterIP
-    port: 3000
+    port: 3001
     targetPort: http
-  ingress:
-    enabled: false
   resources: {}
-  extraEnvSecrets:
-    OPENAI_API_KEY:
-      name: openai-api-key
-      key: OPENAI_API_KEY
-    MONGODB_URI:  
-      name: mongodb-uri
-      key: MONGODB_URI
-  env:
-    NEXT_PUBLIC_MCP_SERVER_URL: http://perfana-mcp:8888/mcp
-    OPENAI_MODEL: gpt-4o-mini
-    NEXT_PUBLIC_COPILOTKIT_RUNTIME_URL: /api/copilotkit
+    # limits:
+    #  cpu: 2
+    #  memory: 2Gi
+    # requests:
+    #  cpu: 1
+    #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
   topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
+  extraEnvSecrets: {}
+  # DB_PASSWORD:
+  #   name: postgres-secret
+  #   key: password
+  # KEYCLOAK_CLIENT_SECRET:
+  #   name: keycloak-secret
+  #   key: client-secret
+  env:
+    NODE_ENV: production
+    DB_HOST: ""
+    DB_PORT: "5432"
+    DB_NAME: "perfana"
+    DB_USERNAME: ""
+    KEYCLOAK_URL: ""
+    KEYCLOAK_REALM: "perfana"
+    KEYCLOAK_CLIENT_ID: "perfana"
+    REDIS_HOST: ""
+    REDIS_PORT: "6379"
   serviceAccount:
     enabled: false
-    name: perfana-chat
-  
+    name: perfana-api
 
-perfanaMcp:
-  enabled: false
+# =============================================================================
+# perfana-worker: Background job processing with BullMQ
+# =============================================================================
+perfanaWorker:
+  enabled: true
   replicaCount: 1
   image:
-    repository: perfana/perfana-mcp
-    tag: latest
+    repository: perfana/perfana-worker
+    tag: perfana-4.0.0
+    pullPolicy: Always
+  deploymentStrategy: RollingUpdate
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  resources: {}
+    # limits:
+    #  cpu: 2
+    #  memory: 2Gi
+    # requests:
+    #  cpu: 1
+    #  memory: 512Mi
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: {}
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets: {}
+  # DB_PASSWORD:
+  #   name: postgres-secret
+  #   key: password
+  env:
+    NODE_ENV: production
+    DB_HOST: ""
+    DB_PORT: "5432"
+    DB_NAME: "perfana"
+    DB_USERNAME: ""
+    REDIS_HOST: ""
+    REDIS_PORT: "6379"
+  serviceAccount:
+    enabled: false
+    name: perfana-worker
+
+# =============================================================================
+# perfana-grafana-sync: Grafana dashboard synchronization service
+# =============================================================================
+perfanaGrafanaSync:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: perfana/perfana-grafana-sync
+    tag: perfana-4.0.0
     pullPolicy: Always
   command: []
   args: []
   labels: {}
   annotations: {}
-  service:
-    type: ClusterIP
-    port: 8888
-    targetPort: http
   resources: {}
+    # limits:
+    #  cpu: 1
+    #  memory: 1Gi
+    # requests:
+    #  cpu: 500m
+    #  memory: 512Mi
   nodeSelector: {}
   tolerations: []
   topologySpreadConstraints: {}
   affinity: {}
   volumes: []
   volumeMounts: []
-  extraEnvSecrets:
-    MCP_MONGODB_URI:  
-      name: mongodb-uri
-      key: MONGODB_URI
+  extraEnvSecrets: {}
+  # DB_PASSWORD:
+  #   name: postgres-secret
+  #   key: password
   env:
-    MCP_MONGODB_READONLY: "true"
-    MCP_PORT: "8888"
+    NODE_ENV: production
+    DB_HOST: ""
+    DB_PORT: "5432"
+    DB_NAME: "perfana"
+    DB_USERNAME: ""
+    GRAFANA_SYNC_ENABLED: "true"
+    GRAFANA_SYNC_INTERVAL_MINUTES: "60"
+    AUTO_CONFIG_ENABLED: "true"
+    SANITY_CHECK_ENABLED: "true"
+  envFromSecrets: []
   serviceAccount:
     enabled: false
-    name: perfana-mcp
+    name: perfana-grafana-sync
 
+# =============================================================================
+# DEPRECATED: Legacy services (kept for reference during migration)
+# =============================================================================
+# The following services have been removed in Perfana 4.0:
+# - perfanaFe (replaced by perfanaWeb)
+# - perfanaCheck (functionality moved to perfanaApi)
+# - perfanaDsApi (replaced by perfanaApi)
+# - perfanaDsWorker (replaced by perfanaWorker)
+# - perfanaDsMetricWorker (consolidated into perfanaWorker)
+# - perfanaMcp (removed)
+# - perfanaChat (removed)
+# - perfanaGrafana (replaced by perfanaGrafanaSync)
+# - perfanaSnapshot (functionality moved to perfanaApi)
+# - perfanaScheduler (functionality moved to perfanaGrafanaSync)
