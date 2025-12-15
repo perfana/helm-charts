@@ -113,6 +113,21 @@ perfanaApi:
     type: ClusterIP
     port: 3001
     targetPort: http
+  ingress:
+    enabled: false
+    # ingressClassName: nginx
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   cert-manager.io/cluster-issuer: "<issuer>"
+    # hosts:
+    #   - host: <hostname>
+    #     paths:
+    #       - path: /api
+    #         pathType: ImplementationSpecific
+    # tls:
+    #   - hosts:
+    #       - <hostname>
+    #     secretName: perfana-api-<hostname>-tls
   resources: {}
     # limits:
     #  cpu: 2
