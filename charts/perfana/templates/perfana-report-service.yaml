@@ -1,0 +1,21 @@
+{{- if .Values.perfanaReport.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: perfana-report
+  labels:
+    app: perfana-report
+    chart: {{ include "perfana.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.perfanaReport.service.type }}
+  ports:
+    - port: {{ .Values.perfanaReport.service.port }}
+      targetPort: {{ .Values.perfanaReport.service.targetPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: perfana-report
+    release: {{ .Release.Name }}
+{{- end }}
