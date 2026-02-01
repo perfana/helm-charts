@@ -253,6 +253,56 @@ perfanaGrafanaSync:
     enabled: false
     name: perfana-grafana-sync
 
+perfanaReport:
+  enabled: true
+  replicaCount: 2
+  image:
+    repository: perfana/perfana-report
+    tag: perfana-4.0.0
+    pullPolicy: Always
+  deploymentStrategy: RollingUpdate
+  command: []
+  args: []
+  labels: {}
+  annotations: {}
+  service:
+    type: ClusterIP
+    port: 3003
+    targetPort: http
+  resources:
+    limits:
+      cpu: 2
+      memory: 4Gi
+    requests:
+      cpu: 1
+      memory: 2Gi
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: {}
+  affinity: {}
+  volumes: []
+  volumeMounts: []
+  extraEnvSecrets: {}
+  # DB_PASSWORD:
+  #   name: postgres-secret
+  #   key: password
+  env:
+    NODE_ENV: production
+    PORT: "3003"
+    DB_HOST: ""
+    DB_PORT: "5432"
+    DB_NAME: "perfana"
+    DB_USERNAME: ""
+    REDIS_HOST: ""
+    REDIS_PORT: "6379"
+    BROWSER_POOL_SIZE: "3"
+    PDF_TIMEOUT_MS: "90000"
+    QUEUE_CONCURRENCY: "2"
+  envFromSecrets: []
+  serviceAccount:
+    enabled: false
+    name: perfana-report
+
 # =============================================================================
 # DEPRECATED: Legacy services (kept for reference during migration)
 # =============================================================================
